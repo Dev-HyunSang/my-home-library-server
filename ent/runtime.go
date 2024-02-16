@@ -5,6 +5,7 @@ package ent
 import (
 	"time"
 
+	"github.com/dev-hyunsang/my-home-library-server/ent/book"
 	"github.com/dev-hyunsang/my-home-library-server/ent/schema"
 	"github.com/dev-hyunsang/my-home-library-server/ent/user"
 )
@@ -13,6 +14,20 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	bookFields := schema.Book{}.Fields()
+	_ = bookFields
+	// bookDescTotalPage is the schema descriptor for total_page field.
+	bookDescTotalPage := bookFields[7].Descriptor()
+	// book.DefaultTotalPage holds the default value on creation for the total_page field.
+	book.DefaultTotalPage = bookDescTotalPage.Default.(int)
+	// bookDescCurrentPage is the schema descriptor for current_page field.
+	bookDescCurrentPage := bookFields[8].Descriptor()
+	// book.DefaultCurrentPage holds the default value on creation for the current_page field.
+	book.DefaultCurrentPage = bookDescCurrentPage.Default.(int)
+	// bookDescCreatedAt is the schema descriptor for created_at field.
+	bookDescCreatedAt := bookFields[9].Descriptor()
+	// book.DefaultCreatedAt holds the default value on creation for the created_at field.
+	book.DefaultCreatedAt = bookDescCreatedAt.Default.(func() time.Time)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescCreatedAt is the schema descriptor for created_at field.

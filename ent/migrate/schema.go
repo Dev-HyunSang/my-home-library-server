@@ -8,6 +8,34 @@ import (
 )
 
 var (
+	// BooksColumns holds the columns for the "books" table.
+	BooksColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "title", Type: field.TypeString},
+		{Name: "subtitle", Type: field.TypeString},
+		{Name: "publisher", Type: field.TypeString},
+		{Name: "publishing_company", Type: field.TypeString},
+		{Name: "memo", Type: field.TypeString},
+		{Name: "total_page", Type: field.TypeInt, Default: 0},
+		{Name: "current_page", Type: field.TypeInt, Default: 0},
+		{Name: "created_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime"}},
+		{Name: "edited_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime"}},
+		{Name: "user_uuid", Type: field.TypeUUID},
+	}
+	// BooksTable holds the schema information for the "books" table.
+	BooksTable = &schema.Table{
+		Name:       "books",
+		Columns:    BooksColumns,
+		PrimaryKey: []*schema.Column{BooksColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "books_users_user",
+				Columns:    []*schema.Column{BooksColumns[10]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
@@ -15,7 +43,7 @@ var (
 		{Name: "email", Type: field.TypeString},
 		{Name: "password", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime"}},
-		{Name: "updated_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime"}},
+		{Name: "edited_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime"}},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{
@@ -25,9 +53,11 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		BooksTable,
 		UsersTable,
 	}
 )
 
 func init() {
+	BooksTable.ForeignKeys[0].RefTable = UsersTable
 }

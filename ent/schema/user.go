@@ -27,11 +27,10 @@ func (User) Fields() []ent.Field {
 			}).SchemaType(map[string]string{
 			dialect.MySQL: "datetime",
 		}),
-		field.Time("updated_at").
+		field.Time("edited_at").
 			SchemaType(map[string]string{
 				dialect.MySQL: "datetime",
-			}).
-			Default(nil),
+			}),
 	}
 }
 

@@ -53,9 +53,9 @@ func (uc *UserCreate) SetNillableCreatedAt(t *time.Time) *UserCreate {
 	return uc
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (uc *UserCreate) SetUpdatedAt(t time.Time) *UserCreate {
-	uc.mutation.SetUpdatedAt(t)
+// SetEditedAt sets the "edited_at" field.
+func (uc *UserCreate) SetEditedAt(t time.Time) *UserCreate {
+	uc.mutation.SetEditedAt(t)
 	return uc
 }
 
@@ -120,8 +120,8 @@ func (uc *UserCreate) check() error {
 	if _, ok := uc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "User.created_at"`)}
 	}
-	if _, ok := uc.mutation.UpdatedAt(); !ok {
-		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "User.updated_at"`)}
+	if _, ok := uc.mutation.EditedAt(); !ok {
+		return &ValidationError{Name: "edited_at", err: errors.New(`ent: missing required field "User.edited_at"`)}
 	}
 	return nil
 }
@@ -174,9 +174,9 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		_spec.SetField(user.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := uc.mutation.UpdatedAt(); ok {
-		_spec.SetField(user.FieldUpdatedAt, field.TypeTime, value)
-		_node.UpdatedAt = value
+	if value, ok := uc.mutation.EditedAt(); ok {
+		_spec.SetField(user.FieldEditedAt, field.TypeTime, value)
+		_node.EditedAt = value
 	}
 	return _node, _spec
 }

@@ -21,8 +21,8 @@ const (
 	FieldPassword = "password"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
-	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
-	FieldUpdatedAt = "updated_at"
+	// FieldEditedAt holds the string denoting the edited_at field in the database.
+	FieldEditedAt = "edited_at"
 	// Table holds the table name of the user in the database.
 	Table = "users"
 )
@@ -34,7 +34,7 @@ var Columns = []string{
 	FieldEmail,
 	FieldPassword,
 	FieldCreatedAt,
-	FieldUpdatedAt,
+	FieldEditedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -80,7 +80,7 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
-// ByUpdatedAt orders the results by the updated_at field.
-func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+// ByEditedAt orders the results by the edited_at field.
+func ByEditedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldEditedAt, opts...).ToFunc()
 }

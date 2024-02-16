@@ -26,8 +26,8 @@ type User struct {
 	Password string `json:"password,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
-	// UpdatedAt holds the value of the "updated_at" field.
-	UpdatedAt    time.Time `json:"updated_at,omitempty"`
+	// EditedAt holds the value of the "edited_at" field.
+	EditedAt     time.Time `json:"edited_at,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -38,7 +38,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case user.FieldNickname, user.FieldEmail, user.FieldPassword:
 			values[i] = new(sql.NullString)
-		case user.FieldCreatedAt, user.FieldUpdatedAt:
+		case user.FieldCreatedAt, user.FieldEditedAt:
 			values[i] = new(sql.NullTime)
 		case user.FieldID:
 			values[i] = new(uuid.UUID)
@@ -87,11 +87,11 @@ func (u *User) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				u.CreatedAt = value.Time
 			}
-		case user.FieldUpdatedAt:
+		case user.FieldEditedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+				return fmt.Errorf("unexpected type %T for field edited_at", values[i])
 			} else if value.Valid {
-				u.UpdatedAt = value.Time
+				u.EditedAt = value.Time
 			}
 		default:
 			u.selectValues.Set(columns[i], values[i])
@@ -141,8 +141,8 @@ func (u *User) String() string {
 	builder.WriteString("created_at=")
 	builder.WriteString(u.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("updated_at=")
-	builder.WriteString(u.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString("edited_at=")
+	builder.WriteString(u.EditedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }
