@@ -3,6 +3,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -10,6 +11,7 @@ import (
 	"github.com/dev-hyunsang/my-home-library-server/db"
 	"github.com/dev-hyunsang/my-home-library-server/dto"
 	"github.com/dev-hyunsang/my-home-library-server/ent/user"
+	"github.com/dev-hyunsang/my-home-library-server/logger"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -45,8 +47,8 @@ func JoinUserHandler(ctx *fiber.Ctx) error {
 		SetNickname(req.NickName).
 		SetEmail(req.Email).
 		SetPassword(string(hashedPw)).
-		SetUpdatedAt(time.Time{}).
 		SetCreatedAt(time.Now()).
+		SetEditedAt(time.Now()).
 		Save(context.Background())
 	if err != nil {
 		log.Println("Failed Create User")
@@ -54,7 +56,14 @@ func JoinUserHandler(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusInternalServerError).JSON("")
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(result)
+	return ctx.Status(fiber.StatusOK).JSON(dto.ResponseJoinUser{
+		Status: dto.Status{
+			Code:    fiber.StatusOK,
+			Message: "성공적으로 회원가입 했어요! 오늘부터 열심히 책을 읽어봐요!",
+		},
+		Data:        result,
+		ResponsedAt: time.Now(),
+	})
 }
 
 func LoginUserHandler(ctx *fiber.Ctx) error {
@@ -105,5 +114,21 @@ func LoginUserHandler(ctx *fiber.Ctx) error {
 }
 
 func LogOutUserHandler(ctx *fiber.Ctx) error {
+	authToken := ctx.GetReqHeaders()["Authorization"][0]
+
+	token, err := auth.ExtractTokenMetadata(authToken)
+	if err != nil {
+		logger.Error(err.Error())
+		return ctx.Status(fiber.StatusUnauthorized).JSON(dto.ResponseErr{})
+	}
+
+	deleted, err := auth.DeleteAuth(token.AccessUUID)
+	if err != nil || deleted == 0 {
+		logger.Error(err.Error())
+		return ctx.Status(fiber.StatusInternalServerError).JSON(dto.ResponseErr{})
+	}
+
+	logger.Info(fmt.Sprintf("Deleted By %d", uint64(deleted)))
+
 	return ctx.Status(fiber.StatusOK).JSON("")
 }
