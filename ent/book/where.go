@@ -56,6 +56,11 @@ func IDLTE(id uuid.UUID) predicate.Book {
 	return predicate.Book(sql.FieldLTE(FieldID, id))
 }
 
+// Pk applies equality check predicate on the "pk" field. It's identical to PkEQ.
+func Pk(v int) predicate.Book {
+	return predicate.Book(sql.FieldEQ(FieldPk, v))
+}
+
 // UserUUID applies equality check predicate on the "user_uuid" field. It's identical to UserUUIDEQ.
 func UserUUID(v uuid.UUID) predicate.Book {
 	return predicate.Book(sql.FieldEQ(FieldUserUUID, v))
@@ -104,6 +109,46 @@ func CreatedAt(v time.Time) predicate.Book {
 // EditedAt applies equality check predicate on the "edited_at" field. It's identical to EditedAtEQ.
 func EditedAt(v time.Time) predicate.Book {
 	return predicate.Book(sql.FieldEQ(FieldEditedAt, v))
+}
+
+// PkEQ applies the EQ predicate on the "pk" field.
+func PkEQ(v int) predicate.Book {
+	return predicate.Book(sql.FieldEQ(FieldPk, v))
+}
+
+// PkNEQ applies the NEQ predicate on the "pk" field.
+func PkNEQ(v int) predicate.Book {
+	return predicate.Book(sql.FieldNEQ(FieldPk, v))
+}
+
+// PkIn applies the In predicate on the "pk" field.
+func PkIn(vs ...int) predicate.Book {
+	return predicate.Book(sql.FieldIn(FieldPk, vs...))
+}
+
+// PkNotIn applies the NotIn predicate on the "pk" field.
+func PkNotIn(vs ...int) predicate.Book {
+	return predicate.Book(sql.FieldNotIn(FieldPk, vs...))
+}
+
+// PkGT applies the GT predicate on the "pk" field.
+func PkGT(v int) predicate.Book {
+	return predicate.Book(sql.FieldGT(FieldPk, v))
+}
+
+// PkGTE applies the GTE predicate on the "pk" field.
+func PkGTE(v int) predicate.Book {
+	return predicate.Book(sql.FieldGTE(FieldPk, v))
+}
+
+// PkLT applies the LT predicate on the "pk" field.
+func PkLT(v int) predicate.Book {
+	return predicate.Book(sql.FieldLT(FieldPk, v))
+}
+
+// PkLTE applies the LTE predicate on the "pk" field.
+func PkLTE(v int) predicate.Book {
+	return predicate.Book(sql.FieldLTE(FieldPk, v))
 }
 
 // UserUUIDEQ applies the EQ predicate on the "user_uuid" field.

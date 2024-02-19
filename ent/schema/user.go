@@ -17,6 +17,9 @@ type User struct {
 // Fields of the User.
 func (User) Fields() []ent.Field {
 	return []ent.Field{
+		field.Int("pk").SchemaType(map[string]string{
+			dialect.MySQL: "auto_ increment",
+		}),
 		field.UUID("id", uuid.New()),
 		field.String("nickname"),
 		field.String("email"),

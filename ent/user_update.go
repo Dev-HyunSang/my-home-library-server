@@ -28,6 +28,27 @@ func (uu *UserUpdate) Where(ps ...predicate.User) *UserUpdate {
 	return uu
 }
 
+// SetPk sets the "pk" field.
+func (uu *UserUpdate) SetPk(i int) *UserUpdate {
+	uu.mutation.ResetPk()
+	uu.mutation.SetPk(i)
+	return uu
+}
+
+// SetNillablePk sets the "pk" field if the given value is not nil.
+func (uu *UserUpdate) SetNillablePk(i *int) *UserUpdate {
+	if i != nil {
+		uu.SetPk(*i)
+	}
+	return uu
+}
+
+// AddPk adds i to the "pk" field.
+func (uu *UserUpdate) AddPk(i int) *UserUpdate {
+	uu.mutation.AddPk(i)
+	return uu
+}
+
 // SetNickname sets the "nickname" field.
 func (uu *UserUpdate) SetNickname(s string) *UserUpdate {
 	uu.mutation.SetNickname(s)
@@ -139,6 +160,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := uu.mutation.Pk(); ok {
+		_spec.SetField(user.FieldPk, field.TypeInt, value)
+	}
+	if value, ok := uu.mutation.AddedPk(); ok {
+		_spec.AddField(user.FieldPk, field.TypeInt, value)
+	}
 	if value, ok := uu.mutation.Nickname(); ok {
 		_spec.SetField(user.FieldNickname, field.TypeString, value)
 	}
@@ -172,6 +199,27 @@ type UserUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *UserMutation
+}
+
+// SetPk sets the "pk" field.
+func (uuo *UserUpdateOne) SetPk(i int) *UserUpdateOne {
+	uuo.mutation.ResetPk()
+	uuo.mutation.SetPk(i)
+	return uuo
+}
+
+// SetNillablePk sets the "pk" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillablePk(i *int) *UserUpdateOne {
+	if i != nil {
+		uuo.SetPk(*i)
+	}
+	return uuo
+}
+
+// AddPk adds i to the "pk" field.
+func (uuo *UserUpdateOne) AddPk(i int) *UserUpdateOne {
+	uuo.mutation.AddPk(i)
+	return uuo
 }
 
 // SetNickname sets the "nickname" field.
@@ -314,6 +362,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := uuo.mutation.Pk(); ok {
+		_spec.SetField(user.FieldPk, field.TypeInt, value)
+	}
+	if value, ok := uuo.mutation.AddedPk(); ok {
+		_spec.AddField(user.FieldPk, field.TypeInt, value)
 	}
 	if value, ok := uuo.mutation.Nickname(); ok {
 		_spec.SetField(user.FieldNickname, field.TypeString, value)

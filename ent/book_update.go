@@ -30,6 +30,27 @@ func (bu *BookUpdate) Where(ps ...predicate.Book) *BookUpdate {
 	return bu
 }
 
+// SetPk sets the "pk" field.
+func (bu *BookUpdate) SetPk(i int) *BookUpdate {
+	bu.mutation.ResetPk()
+	bu.mutation.SetPk(i)
+	return bu
+}
+
+// SetNillablePk sets the "pk" field if the given value is not nil.
+func (bu *BookUpdate) SetNillablePk(i *int) *BookUpdate {
+	if i != nil {
+		bu.SetPk(*i)
+	}
+	return bu
+}
+
+// AddPk adds i to the "pk" field.
+func (bu *BookUpdate) AddPk(i int) *BookUpdate {
+	bu.mutation.AddPk(i)
+	return bu
+}
+
 // SetUserUUID sets the "user_uuid" field.
 func (bu *BookUpdate) SetUserUUID(u uuid.UUID) *BookUpdate {
 	bu.mutation.SetUserUUID(u)
@@ -253,6 +274,12 @@ func (bu *BookUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := bu.mutation.Pk(); ok {
+		_spec.SetField(book.FieldPk, field.TypeInt, value)
+	}
+	if value, ok := bu.mutation.AddedPk(); ok {
+		_spec.AddField(book.FieldPk, field.TypeInt, value)
+	}
 	if value, ok := bu.mutation.Title(); ok {
 		_spec.SetField(book.FieldTitle, field.TypeString, value)
 	}
@@ -333,6 +360,27 @@ type BookUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *BookMutation
+}
+
+// SetPk sets the "pk" field.
+func (buo *BookUpdateOne) SetPk(i int) *BookUpdateOne {
+	buo.mutation.ResetPk()
+	buo.mutation.SetPk(i)
+	return buo
+}
+
+// SetNillablePk sets the "pk" field if the given value is not nil.
+func (buo *BookUpdateOne) SetNillablePk(i *int) *BookUpdateOne {
+	if i != nil {
+		buo.SetPk(*i)
+	}
+	return buo
+}
+
+// AddPk adds i to the "pk" field.
+func (buo *BookUpdateOne) AddPk(i int) *BookUpdateOne {
+	buo.mutation.AddPk(i)
+	return buo
 }
 
 // SetUserUUID sets the "user_uuid" field.
@@ -587,6 +635,12 @@ func (buo *BookUpdateOne) sqlSave(ctx context.Context) (_node *Book, err error) 
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := buo.mutation.Pk(); ok {
+		_spec.SetField(book.FieldPk, field.TypeInt, value)
+	}
+	if value, ok := buo.mutation.AddedPk(); ok {
+		_spec.AddField(book.FieldPk, field.TypeInt, value)
 	}
 	if value, ok := buo.mutation.Title(); ok {
 		_spec.SetField(book.FieldTitle, field.TypeString, value)
