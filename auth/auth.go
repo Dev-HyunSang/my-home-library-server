@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
@@ -26,7 +25,7 @@ type TokenDetails struct {
 
 type AccessDetails struct {
 	AccessUUID string
-	UserID     uint64
+	UserID     uuid.UUID
 }
 
 func CreateToken(userID uuid.UUID) (*TokenDetails, error) {
@@ -88,12 +87,9 @@ func CreateAuth(userID uuid.UUID, td *TokenDetails) error {
 }
 
 func ExtractToken(bearToken string) string {
-	strArr := strings.Split(bearToken, " ")
-	if len(strArr) == 2 {
-		return strArr[1]
-	}
+	strArr := strings.Split(bearToken, "Bearer ")[1]
 
-	return ""
+	return strArr
 }
 
 func VerifyToken(tokenString string) (*jwt.Token, error) {
@@ -123,37 +119,48 @@ func TokenValid(tokenString string) error {
 }
 
 func ExtractTokenMetadata(tokenString string) (*AccessDetails, error) {
-	token, err := VerifyToken(tokenString)
+	removeToken := ExtractToken(tokenString)
+
+	token, err := VerifyToken(removeToken)
 	if err != nil {
 		return nil, err
 	}
+
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if ok && token.Valid {
 		accessUUID, ok := claims["access_uuid"].(string)
 		if !ok {
 			return nil, err
 		}
-		userID, err := strconv.ParseUint(fmt.Sprintf("%.f", claims["user_id"]), 10, 64)
+
+		// String to UUID => USER UUID
+		parseUserUUID, err := uuid.Parse(claims["user_id"].(string))
 		if err != nil {
 			return nil, err
 		}
+
 		return &AccessDetails{
 			AccessUUID: accessUUID,
-			UserID:     userID,
+			UserID:     parseUserUUID,
 		}, nil
 	}
 	return nil, err
 }
 
-func FetchAuth(authD *AccessDetails) (uint64, error) {
+func FetchAuth(authD *AccessDetails) (uuid.UUID, error) {
 	client := db.ConnectRedis()
 
-	userid, err := client.Get(context.Background(), authD.AccessUUID).Result()
+	userID, err := client.Get(context.Background(), authD.AccessUUID).Result()
 	if err != nil {
-		return 0, err
+		return uuid.Nil, err
 	}
-	userID, _ := strconv.ParseUint(userid, 10, 64)
-	return userID, nil
+
+	paserUserUUID, err := uuid.Parse(userID)
+	if err != nil {
+		return uuid.Nil, err
+	}
+
+	return paserUserUUID, nil
 }
 
 func DeleteAuth(removeUUID string) (int64, error) {
