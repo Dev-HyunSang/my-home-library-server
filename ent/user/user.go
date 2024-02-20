@@ -13,8 +13,6 @@ const (
 	Label = "user"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldPk holds the string denoting the pk field in the database.
-	FieldPk = "pk"
 	// FieldNickname holds the string denoting the nickname field in the database.
 	FieldNickname = "nickname"
 	// FieldEmail holds the string denoting the email field in the database.
@@ -32,7 +30,6 @@ const (
 // Columns holds all SQL columns for user fields.
 var Columns = []string{
 	FieldID,
-	FieldPk,
 	FieldNickname,
 	FieldEmail,
 	FieldPassword,
@@ -61,11 +58,6 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
-}
-
-// ByPk orders the results by the pk field.
-func ByPk(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldPk, opts...).ToFunc()
 }
 
 // ByNickname orders the results by the nickname field.

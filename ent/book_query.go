@@ -298,12 +298,12 @@ func (bq *BookQuery) WithUser(opts ...func(*UserQuery)) *BookQuery {
 // Example:
 //
 //	var v []struct {
-//		Pk int `json:"pk,omitempty"`
+//		UserUUID uuid.UUID `json:"user_uuid,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Book.Query().
-//		GroupBy(book.FieldPk).
+//		GroupBy(book.FieldUserUUID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (bq *BookQuery) GroupBy(field string, fields ...string) *BookGroupBy {
@@ -321,11 +321,11 @@ func (bq *BookQuery) GroupBy(field string, fields ...string) *BookGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Pk int `json:"pk,omitempty"`
+//		UserUUID uuid.UUID `json:"user_uuid,omitempty"`
 //	}
 //
 //	client.Book.Query().
-//		Select(book.FieldPk).
+//		Select(book.FieldUserUUID).
 //		Scan(ctx, &v)
 func (bq *BookQuery) Select(fields ...string) *BookSelect {
 	bq.ctx.Fields = append(bq.ctx.Fields, fields...)

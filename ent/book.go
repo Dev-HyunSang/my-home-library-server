@@ -19,8 +19,6 @@ type Book struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID uuid.UUID `json:"id,omitempty"`
-	// Pk holds the value of the "pk" field.
-	Pk int `json:"pk,omitempty"`
 	// UserUUID holds the value of the "user_uuid" field.
 	UserUUID uuid.UUID `json:"user_uuid,omitempty"`
 	// Title holds the value of the "title" field.
@@ -74,7 +72,7 @@ func (*Book) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case book.FieldPk, book.FieldTotalPage, book.FieldCurrentPage:
+		case book.FieldTotalPage, book.FieldCurrentPage:
 			values[i] = new(sql.NullInt64)
 		case book.FieldTitle, book.FieldSubtitle, book.FieldPublisher, book.FieldPublishingCompany, book.FieldMemo:
 			values[i] = new(sql.NullString)
@@ -102,12 +100,6 @@ func (b *Book) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value != nil {
 				b.ID = *value
-			}
-		case book.FieldPk:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field pk", values[i])
-			} else if value.Valid {
-				b.Pk = int(value.Int64)
 			}
 		case book.FieldUserUUID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
@@ -210,9 +202,6 @@ func (b *Book) String() string {
 	var builder strings.Builder
 	builder.WriteString("Book(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", b.ID))
-	builder.WriteString("pk=")
-	builder.WriteString(fmt.Sprintf("%v", b.Pk))
-	builder.WriteString(", ")
 	builder.WriteString("user_uuid=")
 	builder.WriteString(fmt.Sprintf("%v", b.UserUUID))
 	builder.WriteString(", ")

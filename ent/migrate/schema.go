@@ -11,7 +11,6 @@ var (
 	// BooksColumns holds the columns for the "books" table.
 	BooksColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
-		{Name: "pk", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "auto_ increment"}},
 		{Name: "title", Type: field.TypeString},
 		{Name: "subtitle", Type: field.TypeString},
 		{Name: "publisher", Type: field.TypeString},
@@ -31,7 +30,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "books_users_user",
-				Columns:    []*schema.Column{BooksColumns[11]},
+				Columns:    []*schema.Column{BooksColumns[10]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -40,7 +39,6 @@ var (
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
-		{Name: "pk", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "auto_ increment"}},
 		{Name: "nickname", Type: field.TypeString},
 		{Name: "email", Type: field.TypeString},
 		{Name: "password", Type: field.TypeString},

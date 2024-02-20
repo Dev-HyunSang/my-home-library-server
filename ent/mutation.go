@@ -36,8 +36,6 @@ type BookMutation struct {
 	op                 Op
 	typ                string
 	id                 *uuid.UUID
-	pk                 *int
-	addpk              *int
 	title              *string
 	subtitle           *string
 	publisher          *string
@@ -159,62 +157,6 @@ func (m *BookMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
-}
-
-// SetPk sets the "pk" field.
-func (m *BookMutation) SetPk(i int) {
-	m.pk = &i
-	m.addpk = nil
-}
-
-// Pk returns the value of the "pk" field in the mutation.
-func (m *BookMutation) Pk() (r int, exists bool) {
-	v := m.pk
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPk returns the old "pk" field's value of the Book entity.
-// If the Book object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BookMutation) OldPk(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPk is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPk requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPk: %w", err)
-	}
-	return oldValue.Pk, nil
-}
-
-// AddPk adds i to the "pk" field.
-func (m *BookMutation) AddPk(i int) {
-	if m.addpk != nil {
-		*m.addpk += i
-	} else {
-		m.addpk = &i
-	}
-}
-
-// AddedPk returns the value that was added to the "pk" field in this mutation.
-func (m *BookMutation) AddedPk() (r int, exists bool) {
-	v := m.addpk
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetPk resets all changes to the "pk" field.
-func (m *BookMutation) ResetPk() {
-	m.pk = nil
-	m.addpk = nil
 }
 
 // SetUserUUID sets the "user_uuid" field.
@@ -691,10 +633,7 @@ func (m *BookMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *BookMutation) Fields() []string {
-	fields := make([]string, 0, 11)
-	if m.pk != nil {
-		fields = append(fields, book.FieldPk)
-	}
+	fields := make([]string, 0, 10)
 	if m.user != nil {
 		fields = append(fields, book.FieldUserUUID)
 	}
@@ -733,8 +672,6 @@ func (m *BookMutation) Fields() []string {
 // schema.
 func (m *BookMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case book.FieldPk:
-		return m.Pk()
 	case book.FieldUserUUID:
 		return m.UserUUID()
 	case book.FieldTitle:
@@ -764,8 +701,6 @@ func (m *BookMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *BookMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case book.FieldPk:
-		return m.OldPk(ctx)
 	case book.FieldUserUUID:
 		return m.OldUserUUID(ctx)
 	case book.FieldTitle:
@@ -795,13 +730,6 @@ func (m *BookMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type.
 func (m *BookMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case book.FieldPk:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPk(v)
-		return nil
 	case book.FieldUserUUID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
@@ -880,9 +808,6 @@ func (m *BookMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *BookMutation) AddedFields() []string {
 	var fields []string
-	if m.addpk != nil {
-		fields = append(fields, book.FieldPk)
-	}
 	if m.addtotal_page != nil {
 		fields = append(fields, book.FieldTotalPage)
 	}
@@ -897,8 +822,6 @@ func (m *BookMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *BookMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case book.FieldPk:
-		return m.AddedPk()
 	case book.FieldTotalPage:
 		return m.AddedTotalPage()
 	case book.FieldCurrentPage:
@@ -912,13 +835,6 @@ func (m *BookMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *BookMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case book.FieldPk:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddPk(v)
-		return nil
 	case book.FieldTotalPage:
 		v, ok := value.(int)
 		if !ok {
@@ -960,9 +876,6 @@ func (m *BookMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *BookMutation) ResetField(name string) error {
 	switch name {
-	case book.FieldPk:
-		m.ResetPk()
-		return nil
 	case book.FieldUserUUID:
 		m.ResetUserUUID()
 		return nil
@@ -1077,8 +990,6 @@ type UserMutation struct {
 	op            Op
 	typ           string
 	id            *uuid.UUID
-	pk            *int
-	addpk         *int
 	nickname      *string
 	email         *string
 	password      *string
@@ -1192,62 +1103,6 @@ func (m *UserMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
-}
-
-// SetPk sets the "pk" field.
-func (m *UserMutation) SetPk(i int) {
-	m.pk = &i
-	m.addpk = nil
-}
-
-// Pk returns the value of the "pk" field in the mutation.
-func (m *UserMutation) Pk() (r int, exists bool) {
-	v := m.pk
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPk returns the old "pk" field's value of the User entity.
-// If the User object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldPk(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPk is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPk requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPk: %w", err)
-	}
-	return oldValue.Pk, nil
-}
-
-// AddPk adds i to the "pk" field.
-func (m *UserMutation) AddPk(i int) {
-	if m.addpk != nil {
-		*m.addpk += i
-	} else {
-		m.addpk = &i
-	}
-}
-
-// AddedPk returns the value that was added to the "pk" field in this mutation.
-func (m *UserMutation) AddedPk() (r int, exists bool) {
-	v := m.addpk
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetPk resets all changes to the "pk" field.
-func (m *UserMutation) ResetPk() {
-	m.pk = nil
-	m.addpk = nil
 }
 
 // SetNickname sets the "nickname" field.
@@ -1464,10 +1319,7 @@ func (m *UserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 6)
-	if m.pk != nil {
-		fields = append(fields, user.FieldPk)
-	}
+	fields := make([]string, 0, 5)
 	if m.nickname != nil {
 		fields = append(fields, user.FieldNickname)
 	}
@@ -1491,8 +1343,6 @@ func (m *UserMutation) Fields() []string {
 // schema.
 func (m *UserMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case user.FieldPk:
-		return m.Pk()
 	case user.FieldNickname:
 		return m.Nickname()
 	case user.FieldEmail:
@@ -1512,8 +1362,6 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case user.FieldPk:
-		return m.OldPk(ctx)
 	case user.FieldNickname:
 		return m.OldNickname(ctx)
 	case user.FieldEmail:
@@ -1533,13 +1381,6 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type.
 func (m *UserMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case user.FieldPk:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPk(v)
-		return nil
 	case user.FieldNickname:
 		v, ok := value.(string)
 		if !ok {
@@ -1582,21 +1423,13 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *UserMutation) AddedFields() []string {
-	var fields []string
-	if m.addpk != nil {
-		fields = append(fields, user.FieldPk)
-	}
-	return fields
+	return nil
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *UserMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case user.FieldPk:
-		return m.AddedPk()
-	}
 	return nil, false
 }
 
@@ -1605,13 +1438,6 @@ func (m *UserMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *UserMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case user.FieldPk:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddPk(v)
-		return nil
 	}
 	return fmt.Errorf("unknown User numeric field %s", name)
 }
@@ -1639,9 +1465,6 @@ func (m *UserMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *UserMutation) ResetField(name string) error {
 	switch name {
-	case user.FieldPk:
-		m.ResetPk()
-		return nil
 	case user.FieldNickname:
 		m.ResetNickname()
 		return nil

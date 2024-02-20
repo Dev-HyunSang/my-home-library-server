@@ -22,12 +22,6 @@ type BookCreate struct {
 	hooks    []Hook
 }
 
-// SetPk sets the "pk" field.
-func (bc *BookCreate) SetPk(i int) *BookCreate {
-	bc.mutation.SetPk(i)
-	return bc
-}
-
 // SetUserUUID sets the "user_uuid" field.
 func (bc *BookCreate) SetUserUUID(u uuid.UUID) *BookCreate {
 	bc.mutation.SetUserUUID(u)
@@ -180,9 +174,6 @@ func (bc *BookCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (bc *BookCreate) check() error {
-	if _, ok := bc.mutation.Pk(); !ok {
-		return &ValidationError{Name: "pk", err: errors.New(`ent: missing required field "Book.pk"`)}
-	}
 	if _, ok := bc.mutation.UserUUID(); !ok {
 		return &ValidationError{Name: "user_uuid", err: errors.New(`ent: missing required field "Book.user_uuid"`)}
 	}
@@ -250,10 +241,6 @@ func (bc *BookCreate) createSpec() (*Book, *sqlgraph.CreateSpec) {
 	if id, ok := bc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = &id
-	}
-	if value, ok := bc.mutation.Pk(); ok {
-		_spec.SetField(book.FieldPk, field.TypeInt, value)
-		_node.Pk = value
 	}
 	if value, ok := bc.mutation.Title(); ok {
 		_spec.SetField(book.FieldTitle, field.TypeString, value)

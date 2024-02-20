@@ -55,11 +55,6 @@ func IDLTE(id uuid.UUID) predicate.User {
 	return predicate.User(sql.FieldLTE(FieldID, id))
 }
 
-// Pk applies equality check predicate on the "pk" field. It's identical to PkEQ.
-func Pk(v int) predicate.User {
-	return predicate.User(sql.FieldEQ(FieldPk, v))
-}
-
 // Nickname applies equality check predicate on the "nickname" field. It's identical to NicknameEQ.
 func Nickname(v string) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldNickname, v))
@@ -83,46 +78,6 @@ func CreatedAt(v time.Time) predicate.User {
 // EditedAt applies equality check predicate on the "edited_at" field. It's identical to EditedAtEQ.
 func EditedAt(v time.Time) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldEditedAt, v))
-}
-
-// PkEQ applies the EQ predicate on the "pk" field.
-func PkEQ(v int) predicate.User {
-	return predicate.User(sql.FieldEQ(FieldPk, v))
-}
-
-// PkNEQ applies the NEQ predicate on the "pk" field.
-func PkNEQ(v int) predicate.User {
-	return predicate.User(sql.FieldNEQ(FieldPk, v))
-}
-
-// PkIn applies the In predicate on the "pk" field.
-func PkIn(vs ...int) predicate.User {
-	return predicate.User(sql.FieldIn(FieldPk, vs...))
-}
-
-// PkNotIn applies the NotIn predicate on the "pk" field.
-func PkNotIn(vs ...int) predicate.User {
-	return predicate.User(sql.FieldNotIn(FieldPk, vs...))
-}
-
-// PkGT applies the GT predicate on the "pk" field.
-func PkGT(v int) predicate.User {
-	return predicate.User(sql.FieldGT(FieldPk, v))
-}
-
-// PkGTE applies the GTE predicate on the "pk" field.
-func PkGTE(v int) predicate.User {
-	return predicate.User(sql.FieldGTE(FieldPk, v))
-}
-
-// PkLT applies the LT predicate on the "pk" field.
-func PkLT(v int) predicate.User {
-	return predicate.User(sql.FieldLT(FieldPk, v))
-}
-
-// PkLTE applies the LTE predicate on the "pk" field.
-func PkLTE(v int) predicate.User {
-	return predicate.User(sql.FieldLTE(FieldPk, v))
 }
 
 // NicknameEQ applies the EQ predicate on the "nickname" field.

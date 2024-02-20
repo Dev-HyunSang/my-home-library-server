@@ -21,12 +21,6 @@ type UserCreate struct {
 	hooks    []Hook
 }
 
-// SetPk sets the "pk" field.
-func (uc *UserCreate) SetPk(i int) *UserCreate {
-	uc.mutation.SetPk(i)
-	return uc
-}
-
 // SetNickname sets the "nickname" field.
 func (uc *UserCreate) SetNickname(s string) *UserCreate {
 	uc.mutation.SetNickname(s)
@@ -114,9 +108,6 @@ func (uc *UserCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (uc *UserCreate) check() error {
-	if _, ok := uc.mutation.Pk(); !ok {
-		return &ValidationError{Name: "pk", err: errors.New(`ent: missing required field "User.pk"`)}
-	}
 	if _, ok := uc.mutation.Nickname(); !ok {
 		return &ValidationError{Name: "nickname", err: errors.New(`ent: missing required field "User.nickname"`)}
 	}
@@ -166,10 +157,6 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if id, ok := uc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = &id
-	}
-	if value, ok := uc.mutation.Pk(); ok {
-		_spec.SetField(user.FieldPk, field.TypeInt, value)
-		_node.Pk = value
 	}
 	if value, ok := uc.mutation.Nickname(); ok {
 		_spec.SetField(user.FieldNickname, field.TypeString, value)

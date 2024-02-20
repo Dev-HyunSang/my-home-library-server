@@ -17,21 +17,21 @@ func init() {
 	bookFields := schema.Book{}.Fields()
 	_ = bookFields
 	// bookDescTotalPage is the schema descriptor for total_page field.
-	bookDescTotalPage := bookFields[8].Descriptor()
+	bookDescTotalPage := bookFields[7].Descriptor()
 	// book.DefaultTotalPage holds the default value on creation for the total_page field.
 	book.DefaultTotalPage = bookDescTotalPage.Default.(int)
 	// bookDescCurrentPage is the schema descriptor for current_page field.
-	bookDescCurrentPage := bookFields[9].Descriptor()
+	bookDescCurrentPage := bookFields[8].Descriptor()
 	// book.DefaultCurrentPage holds the default value on creation for the current_page field.
 	book.DefaultCurrentPage = bookDescCurrentPage.Default.(int)
 	// bookDescCreatedAt is the schema descriptor for created_at field.
-	bookDescCreatedAt := bookFields[10].Descriptor()
+	bookDescCreatedAt := bookFields[9].Descriptor()
 	// book.DefaultCreatedAt holds the default value on creation for the created_at field.
 	book.DefaultCreatedAt = bookDescCreatedAt.Default.(func() time.Time)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescCreatedAt is the schema descriptor for created_at field.
-	userDescCreatedAt := userFields[5].Descriptor()
+	userDescCreatedAt := userFields[4].Descriptor()
 	// user.DefaultCreatedAt holds the default value on creation for the created_at field.
 	user.DefaultCreatedAt = userDescCreatedAt.Default.(func() time.Time)
 }

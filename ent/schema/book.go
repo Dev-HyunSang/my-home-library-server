@@ -18,9 +18,6 @@ type Book struct {
 // Fields of the Book.
 func (Book) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("pk").SchemaType(map[string]string{
-			dialect.MySQL: "auto_ increment",
-		}),
 		field.UUID("id", uuid.New()),
 		field.UUID("user_uuid", uuid.New()),
 		field.String("title"),
