@@ -10,5 +10,5 @@ type ErrStatus struct {
 
 type ResponseErr struct {
 	Status      ErrStatus `json:"status"`
-	ResponsedAt time.Time `json:"responsed_at"`
+	RespondedAt time.Time `json:"responded_at"`
 }
