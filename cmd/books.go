@@ -25,7 +25,7 @@ func CreateBookHandler(ctx *fiber.Ctx) error {
 				Message:    "올바르지 않은 요청 방식으로 요청을 했어요. 확인 후 다시 시도해 주세요.",
 				ErrMessage: err.Error(),
 			},
-			ResponsedAt: time.Now(),
+			RespondedAt: time.Now(),
 		})
 	}
 	authToken := ctx.GetReqHeaders()["Authorization"][0]
@@ -39,7 +39,7 @@ func CreateBookHandler(ctx *fiber.Ctx) error {
 				Message:    "로그인을 하지 않은 상태로 요청을 주셨어요. 확인 후 다시 시도해 주세요.",
 				ErrMessage: err.Error(),
 			},
-			ResponsedAt: time.Now(),
+			RespondedAt: time.Now(),
 		})
 	}
 
@@ -52,7 +52,7 @@ func CreateBookHandler(ctx *fiber.Ctx) error {
 				Message:    "로그인 유효시간이 지났어요. 다시 로그인을 하신 다음 시도해 주세요.",
 				ErrMessage: err.Error(),
 			},
-			ResponsedAt: time.Now(),
+			RespondedAt: time.Now(),
 		})
 	}
 
@@ -89,7 +89,7 @@ func CreateBookHandler(ctx *fiber.Ctx) error {
 				Message:    "데이터베이스에 사용자의 정보를 저장하던 도중 오류가 발생했습니다. 잠시후 다시 시도해 주세요.",
 				ErrMessage: err.Error(),
 			},
-			ResponsedAt: time.Now(),
+			RespondedAt: time.Now(),
 		})
 	}
 
@@ -99,7 +99,7 @@ func CreateBookHandler(ctx *fiber.Ctx) error {
 			Message: "성공적으로 책을 등록 했어요! 열심히 읽어봐요!",
 		},
 		Data:        updatedBook,
-		ResponsedAt: time.Now(),
+		RespondedAt: time.Now(),
 	})
 }
 
@@ -116,7 +116,7 @@ func GetBookHandler(ctx *fiber.Ctx) error {
 				Message:    "로그인을 하지 않은 상태로 요청을 주셨어요. 확인 후 다시 시도해 주세요.",
 				ErrMessage: err.Error(),
 			},
-			ResponsedAt: time.Now(),
+			RespondedAt: time.Now(),
 		})
 	}
 
@@ -188,7 +188,7 @@ func GetBooksHandler(ctx *fiber.Ctx) error {
 				Message:    "사용자의 정보를 찾던 도중 동일한 사용자의 정보를 찾을 수 없어요. 잠시후 다시 시도해 주세요.",
 				ErrMessage: err.Error(),
 			},
-			ResponsedAt: time.Now(),
+			RespondedAt: time.Now(),
 		})
 	}
 
@@ -198,7 +198,7 @@ func GetBooksHandler(ctx *fiber.Ctx) error {
 			Message: "성공적으로 소중한 사용자의 책 데이터를 불러왔어요!",
 		},
 		Data:        result,
-		ResponsedAt: time.Now(),
+		RespondedAt: time.Now(),
 	})
 }
 
@@ -216,7 +216,7 @@ func EditBookHandler(ctx *fiber.Ctx) error {
 				Message:    "로그인을 하지 않은 상태로 요청을 주셨어요. 확인 후 다시 시도해 주세요.",
 				ErrMessage: err.Error(),
 			},
-			ResponsedAt: time.Now(),
+			RespondedAt: time.Now(),
 		})
 	}
 
@@ -227,7 +227,7 @@ func EditBookHandler(ctx *fiber.Ctx) error {
 				Message:    "올바르지 않은 요청입니다. 확인 후 다시 요청해 주세요.",
 				ErrMessage: err.Error(),
 			},
-			ResponsedAt: time.Now(),
+			RespondedAt: time.Now(),
 		})
 	}
 
@@ -266,7 +266,7 @@ func DeleteBookHandler(ctx *fiber.Ctx) error {
 				Message:    "로그인을 하지 않은 상태로 요청을 주셨어요. 확인 후 다시 시도해 주세요.",
 				ErrMessage: err.Error(),
 			},
-			ResponsedAt: time.Now(),
+			RespondedAt: time.Now(),
 		})
 	}
 
@@ -292,7 +292,7 @@ func DeleteBookHandler(ctx *fiber.Ctx) error {
 				Message:    "소중한 정보를 처리하던 도중 오류가 발생했어요. 잠시후 다시 시도해 주세요.",
 				ErrMessage: err.Error(),
 			},
-			ResponsedAt: time.Now(),
+			RespondedAt: time.Now(),
 		})
 	}
 
@@ -318,6 +318,6 @@ func DeleteBookHandler(ctx *fiber.Ctx) error {
 			Code:    fiber.StatusOK,
 			Message: "책을 성공적으로 삭제했어요.",
 		},
-		ResponsedAt: time.Now(),
+		RespondedAt: time.Now(),
 	})
 }

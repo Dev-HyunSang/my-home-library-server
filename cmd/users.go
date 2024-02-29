@@ -62,7 +62,7 @@ func JoinUserHandler(ctx *fiber.Ctx) error {
 			Message: "성공적으로 회원가입 했어요! 오늘부터 열심히 책을 읽어봐요!",
 		},
 		Data:        result,
-		ResponsedAt: time.Now(),
+		RespondedAt: time.Now(),
 	})
 }
 
@@ -109,8 +109,39 @@ func LoginUserHandler(ctx *fiber.Ctx) error {
 			RefreshUUID:  ts.RefreshUUID,
 			RefreshToken: ts.RefreshToken,
 		},
-		ResponsedAt: time.Now(),
+		RespondedAt: time.Now(),
 	})
+}
+
+func CheckinUserDataHandler(ctx *fiber.Ctx) error {
+	authToken := ctx.GetReqHeaders()["Authorization"][0]
+
+	token, err := auth.ExtractTokenMetadata(authToken)
+	if err != nil {
+		logger.Error(err.Error())
+		return ctx.Status(fiber.StatusInternalServerError).JSON(dto.ResponseErr{})
+	}
+
+	client, err := db.ConnectMySQL()
+	if err != nil {
+		logger.Error(err.Error())
+		return ctx.Status(fiber.StatusInternalServerError).JSON(dto.ResponseErr{})
+	}
+
+	result, err := client.User.Query().Where(user.ID(token.UserID)).Only(context.Background())
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(dto.ResponseErr{})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(dto.ResponseUserData{
+		Status: dto.Status{
+			Code:    fiber.StatusOK,
+			Message: "성공적으로 사용자의 정보를 가지고 왔습니다.",
+		},
+		Data:        result,
+		RespondedAt: time.Now(),
+	})
+
 }
 
 func LogOutUserHandler(ctx *fiber.Ctx) error {
