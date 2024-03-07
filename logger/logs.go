@@ -5,6 +5,7 @@ import (
 	logstash_logger "github.com/KaranJagtiani/go-logstash"
 	"github.com/dev-hyunsang/my-home-library-server/config"
 	"strconv"
+	"time"
 )
 
 func Init() *logstash_logger.Logstash {
@@ -24,9 +25,15 @@ func Log(msg map[string]interface{}) {
 	logger.Log(msg)
 }
 
-func Error(msg map[string]interface{}) {
+// 효율적으로 코드를 작성하기 위해서 본 패키지에서 처리할 수도록 개발함.
+func Error(err error) {
 	logger := Init()
-	logger.Error(msg)
+
+	logger.Error(map[string]interface{}{
+		"level":     "error",
+		"message":   err,
+		"timestamp": time.Now().Unix(),
+	})
 }
 func Info(msg map[string]interface{}) {
 	logger := Init()
